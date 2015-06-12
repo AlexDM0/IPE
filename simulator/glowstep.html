@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <!--<link rel="stylesheet" type="text/css" href="./css/glowsteps.css">-->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <style>
+
+        body {
+            margin: 0px 0px 0px 0px;
+            background-color: #313131;
+            font-familty: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            height:100%;
+        }
+
+        html {
+            height:100%;
+        }
+
+        div.glowstep {
+            position:absolute;
+            top:0px;
+            left:0px;
+
+            width:75px;
+            height:75px;
+
+            background:
+                -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,0.9) 0%,rgba(40,40,40,0.8) 38%,rgba(60,60,60,0.8) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+                url("./images/glowstep_inner_mask.png"),
+                -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.5) 0%,rgba(255,255,255,0.5) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),
+                url('./images/glowstep_outer_mask.png');
+            background-size: 100%;
+            -webkit-mask-image: url("./images/glowstep_transparency_mask.png");
+        }
+
+        div.glowBackground {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:75px;
+            height:75px;
+            background: #aaaaaa;
+            background-size: 100%;
+            -webkit-mask-image: url("./images/glowstep_transparency_mask.png");
+        }
+
+        div.glow {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:50px;
+            height:50px;
+            background-size: 100%;
+        }
+
+        div.dropdown {
+            display:inline;
+        }
+
+        div.header {
+            margin-bottom:10px;
+            border-style: solid; border-width: 1px; border-color: #4e5052;
+            width:100%;
+            height:90px;
+        }
+
+        div.containerDiv {
+            border-style: solid; border-width: 1px;
+            border-color: #4d4f53;
+            width:100%;
+            height: 85%;
+            background: url("images/concrete.jpg");
+        }
+
+        div.header {
+            background: url('./images/header_back.png');
+            width:100%;
+        }
+
+        input[type="button"]  {
+            width:230px;
+        }
+
+        input[type="text"]  {
+            width:147px;
+        }
+
+        button.btn {
+            width:200px;
+            margin:5px;
+        }
+
+        button.right {
+            position:absolute;
+            right:0px;
+
+        }
+
+        li.selected {
+            background-color: #64a4ff;
+        }
+
+        span.selectedGame {
+            position:relative;
+            top:5px;
+            font-size:26px;
+            color:#ffffff;
+            text-shadow: 0px 0px 5px #0c131e;
+        }
+    </style>
+
+    <script language="JavaScript">
+        var shiftPressed = false;
+        window.onkeydown = function (evt) {
+            var evt2 = evt || window.event;
+            var keyCode = evt2.keyCode || evt2.which;
+            if (keyCode == 16) {
+                shiftPressed = true;
+            }
+        };
+        window.onkeyup = function () {
+            shiftPressed = false;
+        };
+    </script>
+    <script language="JavaScript" src="./js/eve.js"></script>
+    <script language="JavaScript" src="./js/hammer.min.js"></script>
+    <script language="JavaScript" src="./js/agents/glowstepAgent.js"></script>
+    <script language="JavaScript" src="./js/agents/simulatorProxy.js"></script>
+    <script language="JavaScript" src="./js/init.js"></script>
+
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+
+</head>
+<body onload="init()">
+      <div class="header" id="headerDiv">
+      </div>
+      <div class="containerDiv" id="containerDiv">
+          <div class="dropdown">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                  Amount of steps: <span id="amountOfAgents">5</span>
+                  <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                  <li role="presentation" id="li_id_1" onclick="setAmount(1);"><a role="menuitem" tabindex="-1" href="#">1</a></li>
+                  <li role="presentation" id="li_id_2" onclick="setAmount(2);"><a role="menuitem" tabindex="-1" href="#">2</a></li>
+                  <li role="presentation" id="li_id_3" onclick="setAmount(3);"><a role="menuitem" tabindex="-1" href="#">3</a></li>
+                  <li role="presentation" id="li_id_4" onclick="setAmount(4);"><a role="menuitem" tabindex="-1" href="#">4</a></li>
+                  <li role="presentation" id="li_id_5" onclick="setAmount(5);" class="selected"><a role="menuitem" tabindex="-1" href="#">5</a></li>
+                  <li role="presentation" id="li_id_6" onclick="setAmount(6);"><a role="menuitem" tabindex="-1" href="#">6</a></li>
+                  <li role="presentation" id="li_id_7" onclick="setAmount(7);"><a role="menuitem" tabindex="-1" href="#">7</a></li>
+                  <li role="presentation" id="li_id_8" onclick="setAmount(8);"><a role="menuitem" tabindex="-1" href="#">8</a></li>
+                  <li role="presentation" id="li_id_9" onclick="setAmount(9);"><a role="menuitem" tabindex="-1" href="#">9</a></li>
+                  <li role="presentation" id="li_id_10" onclick="setAmount(10);"><a role="menuitem" tabindex="-1" href="#">10</a></li>
+                  <li role="presentation" id="li_id_15" onclick="setAmount(15);"><a role="menuitem" tabindex="-1" href="#">15</a></li>
+                  <li role="presentation" id="li_id_20" onclick="setAmount(20);"><a role="menuitem" tabindex="-1" href="#">20</a></li>
+              </ul>
+          </div>
+          <div class="dropdown">
+              <button class="btn btn-default dropdown-toggle" type="button" id="gamesListWrapper" data-toggle="dropdown" aria-expanded="true">
+                  Select game
+                  <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="gamesList">
+              </ul>
+          </div>
+          <div class="dropdown">
+            <span class="selectedGame" id="selectedGameSpan">No Game Selected</span>
+          </div>
+          <!--agent path: ./agents/games/<input type="text" id="agentPath" value="toggle" style="width:50px;">.js <br />-->
+          <button type="button" class="btn btn-success right" onclick="uploadToHardware();">Upload to the Glowsteps</button>
+      </div>
+
+
+
+</body>
+</html>

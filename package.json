@@ -1,0 +1,11 @@
+{
+  "name": "IPE",
+  "version": "0.0.1",
+  "dependencies": {
+    "evejs": "^0.4.6-test",
+    "hammerjs": "1.1.2",
+    "promise": "^6.0.1",
+    "serialport": "^1.4.9",
+    "minify":"latest"
+  }
+}

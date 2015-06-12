@@ -1,0 +1,218 @@
+div.glowstep {
+    position:absolute;
+    top:0px;
+    left:0px;
+
+    width:75px;
+    height:75px;
+    -webkit-transform:scale(0.8,0.8);
+
+    background:
+        -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+        url("../images/glowstep_inner_mask.png"),
+        -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.8) 0%,rgba(255,255,255,0.4) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),
+        url('../images/glowstep_outer_mask.png'), #232327;
+    background-size: 100%;
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+}
+
+div.glowstep.red {
+    background:
+    /*-webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),*/
+    /*url("../images/glowstep_inner_mask.png"),*/
+    /*-webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),*/
+    /*-webkit-radial-gradient(center, ellipse cover,  rgba(255,0,0,1) 21% ,rgba(255,173,173,0) 70%   ,rgba(255,255,255,0) 100%),*/
+    url('../images/glowstep_outer_mask.png'),
+    #ff0000;
+    background-size: 100%;
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+}
+
+
+div.glowstep.black {
+    background:
+        -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+        url("../images/glowstep_inner_mask.png"),
+        -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,0.8) 0%,rgba(255,255,255,0.4) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),
+        url('../images/glowstep_outer_mask.png'), #232327;
+    background-size: 100%;
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+}
+
+div.glowstep.white {
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+    background:
+        -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+        url("../images/glowstep_inner_mask.png"),
+        -webkit-radial-gradient(center, ellipse cover, rgb(175, 175, 175) 0%, rgb(175, 175, 175) 10%,rgba(255,255,255,0) 60%,rgba(255,255,255,0) 100%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(246, 244, 255) 21% ,rgba(255,173,173,0) 70%   ,rgba(255,255,255,0) 100%),
+        url('../images/glowstep_outer_mask.png'),
+        #ffffff;
+    background-size: 100%
+
+}
+
+
+div.glowstep.orange {
+    background:
+        -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+        url("../images/glowstep_inner_mask.png"),
+        -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(255, 168, 0) 21% ,rgba(255,173,173,0) 70%   ,rgba(255,255,255,0) 100%),
+        url('../images/glowstep_outer_mask.png'),
+        #ffac00;
+    background-size: 100%;
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+}
+
+div.glowstep.yellow {
+    background:
+        -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+        url("../images/glowstep_inner_mask.png"),
+        -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(254, 255, 0) 21% ,rgba(255,173,173,0) 70%   ,rgba(255,255,255,0) 100%),
+        url('../images/glowstep_outer_mask.png'),
+        #fffe00;
+    background-size: 100%;
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+}
+
+
+div.glowstep.green {
+    background:
+        -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+        url("../images/glowstep_inner_mask.png"),
+        -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(57, 255, 0) 21% ,rgba(255,173,173,0) 70%   ,rgba(255,255,255,0) 100%),
+        url('../images/glowstep_outer_mask.png'),
+        #0cff00;
+    background-size: 100%;
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+}
+
+div.glowstep.cyan {
+    background:
+        -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+        url("../images/glowstep_inner_mask.png"),
+        -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(0, 245, 255) 21% ,rgba(255,173,173,0) 70%   ,rgba(255,255,255,0) 100%),
+        url('../images/glowstep_outer_mask.png'),
+        #00f4ff;
+    background-size: 100%;
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+}
+
+
+div.glowstep.blue {
+    background:
+        -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+        url("../images/glowstep_inner_mask.png"),
+        -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(0, 12, 255) 21% ,rgba(255,173,173,0) 70%   ,rgba(255,255,255,0) 100%),
+        url('../images/glowstep_outer_mask.png'),
+        #000aff;
+    background-size: 100%;
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+}
+
+div.glowstep.purple {
+    background:
+        -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+        url("../images/glowstep_inner_mask.png"),
+        -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(149, 0, 255) 21% ,rgba(255,173,173,0) 70%   ,rgba(255,255,255,0) 100%),
+        url('../images/glowstep_outer_mask.png'),
+        #a700ff;
+    background-size: 100%;
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+}
+
+div.glowstep.pink {
+    background:
+        -webkit-radial-gradient(center, ellipse cover,  rgba(20,20,20,1) 0%,rgba(40,40,40,1) 38%,rgba(60,60,60,1) 40%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 100%),
+        url("../images/glowstep_inner_mask.png"),
+        -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(255,255,255,1) 10%,rgba(255,255,255,0) 75%,rgba(255,255,255,0) 100%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(255, 0, 217) 21% ,rgba(255,173,173,0) 70%   ,rgba(255,255,255,0) 100%),
+        url('../images/glowstep_outer_mask.png'),
+        #ff00d9;
+    background-size: 100%;
+    -webkit-mask-image: url("../images/glowstep_transparency_mask.png");
+}
+
+div.shadow {
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:75px;
+    height:75px;
+    background: url("../images/glowstep_transparency_mask.png");
+    background-size: 100%;
+    -webkit-filter: blur(5px);
+    -webkit-transform:scale(0.8,0.8);
+}
+
+div.glow {
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:75px;
+    height:75px;
+    -webkit-transform:scale(0.85,0.85);
+    background-size: 100%;
+}
+
+div.glow.black {}
+
+div.glow.white {
+    background:
+        -webkit-radial-gradient(center, ellipse cover, rgb(255,255,255) 50%,rgba(255,255,255,0) 75%);
+    background-size: 100%;
+}
+div.glow.red {
+    background:
+        -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 10%,rgba(255,255,255,0) 60%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(255,0,0) 20%,rgba(255,255,255,0) 75%);
+    background-size: 100%;
+}
+div.glow.orange {
+    background:
+        -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 10%,rgba(255,255,255,0) 60%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(255, 168, 0) 20%,rgba(255,255,255,0) 75%);
+    background-size: 100%;
+}
+div.glow.yellow {
+    background:
+        -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 10%,rgba(255,255,255,0) 60%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(254, 255, 0) 20%,rgba(255,255,255,0) 75%);
+    background-size: 100%;
+}
+div.glow.green {
+    background:
+        -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 10%,rgba(255,255,255,0) 60%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(57, 255, 0) 20%,rgba(255,255,255,0) 75%);
+    background-size: 100%;
+}
+div.glow.cyan {
+     background:
+         -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 10%,rgba(255,255,255,0) 60%),
+         -webkit-radial-gradient(center, ellipse cover, rgb(0, 245, 255) 20%,rgba(255,255,255,0) 75%);
+     background-size: 100%;
+}
+div.glow.blue {
+    background:
+        -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 10%,rgba(255,255,255,0) 60%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(0, 12, 255) 20%,rgba(255,255,255,0) 75%);
+    background-size: 100%;
+}
+div.glow.purple {
+    background:
+        -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 10%,rgba(255,255,255,0) 60%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(149, 0, 255) 20%,rgba(255,255,255,0) 75%);
+    background-size: 100%;
+}
+div.glow.pink {
+    background:
+        -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 10%,rgba(255,255,255,0) 60%),
+        -webkit-radial-gradient(center, ellipse cover, rgb(255,50,251) 20%,rgba(255,255,255,0) 75%);
+    background-size: 100%;
+}
