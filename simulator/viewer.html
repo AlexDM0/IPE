@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Data Viewer</title>
+    <script language="JavaScript" src="./js/eve.js"></script>
+    <script language="JavaScript" src="./js/vis.js"></script>
+    <script language="JavaScript" src="./js/init.js"></script>
+    <link rel="stylesheet" href="./css/vis.css">
+    <script language="JavaScript" src="./js/agents/viewerProxy.js"></script>
+    <script>
+        eve.system.init({
+            transports: [
+                {
+                    type:'local'
+                },
+                {
+                    type: 'ws'
+                }
+            ]
+        });
+
+        var listenerProxy = new ViewerProxy("viewproxy" + randomUUID());
+    </script>
+
+</head>
+<body>
+Messages over time.
+<div id="visualization"></div>
+
+<script type="text/javascript">
+    // DOM element where the Timeline will be attached
+    var container = document.getElementById('visualization');
+
+    // Create a DataSet (allows two way data-binding)
+    var items = new vis.DataSet([]);
+
+    // Configuration for the Timeline
+    var options = {type:'point',start: new Date().valueOf()-30000, end:new Date().valueOf() + 120000};
+
+    // Create a Timeline
+    var timeline = new vis.Timeline(container, items, options);
+</script>
+</body>
+</html>
+</body>
+</html>

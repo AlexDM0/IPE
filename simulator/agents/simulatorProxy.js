@@ -1,19 +1,30 @@
 var eve = require('evejs');
 var fs = require('fs');
+var FirmwareWriter = require('../firmwareWriter');
+var Promise = require('promise');
 
-
-function SimulatorProxy(id) {
+function SimulatorProxy(id, transport) {
   // execute super constructor
   eve.Agent.call(this, id);
 
   // extend the agent with RPC functionality
-  this.rpc = this.loadModule('rpc', this.rpcFunctions, {timeout:2000}); // option 1
+  this.rpc = this.loadModule('rpc', this.rpcFunctions, {timeout:200000}); // option 1
 
   // connect to all transports provided by the system
   this.connect(eve.system.transports.getAll());
 
   this.games = [];
+  this.transport = transport;
+
+  // reset crownstone
+  var msg = 'Serial4.print(String.fromCharCode(3));\n';
+  this.activePort = this.transport.activePort;
+  this.transport.connections[this.activePort].write(msg);
+
+
   this.getGames();
+
+  console.log("starting SimulationProxy")
 
 }
 
@@ -35,5 +46,34 @@ SimulatorProxy.prototype.getGames = function () {
   })
 }
 
+SimulatorProxy.prototype.rpcFunctions.uploadGame = function(params, sender) {
+  console.log("received command to upload game")
+  var game = params.game;
+  return this.uploadGame(game)
+    //.then(function () {
+    //  console.log('passing the second time to make sure.', sender);
+    //  this.rpc.request(sender,{method:"uploadHalfway", params:{}}).done();
+    //  return this.uploadGame(game);
+    //}.bind(this))
+    .then(function () {
+      console.log("sending finish notification")
+      this.rpc.request(sender,{method:"finishedUpload", params:{}}).done();
+    }.bind(this))
+    .catch(function (err) {
+      console.log("sending error notification", err)
+      this.rpc.request(sender,{method:"errorInUpload", params:{}}).done();
+  }.bind(this));
+}
+
+SimulatorProxy.prototype.uploadGame = function (game) {
+  return new Promise(function (resolve, reject) {
+    var writer = new FirmwareWriter(this.transport);
+    writer.upload('./games/' + game).done(function () {
+      console.log('finished')
+      this.transport.unregister("fwWriter")
+      resolve();
+    }.bind(this));
+  }.bind(this))
+}
 
 module.exports = SimulatorProxy;

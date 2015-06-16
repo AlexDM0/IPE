@@ -62,8 +62,13 @@ function init() {
 
   container = document.getElementById('containerDiv');
 
-  simulationProxy = new SimulatorProxy("proxy" + randomUUID(), container)
+  simulationProxy = new SimulatorProxy("proxy" + randomUUID(), container);
+  simulationProxy.getGames()
     .then(function (reply) {
+      document.getElementById('not_connected').style.opacity = 0.0;
+      setTimeout(function() {
+        document.getElementById('not_connected').style.display = 'none';
+      },500);
       populateGamesList(reply);
     });
   createGrid();
@@ -75,7 +80,7 @@ function createGrid() {
   var dimensions = container.getBoundingClientRect();
 
   var stepWidth = 75;
-  var minX = 350;
+  var minX = 300;
   var usedX = dimensions.width-500;
   var xSpacing = Math.max(minX, usedX / (amountOfAgents-1));
   var ySpacing = 200;
@@ -132,7 +137,25 @@ function killAgents() {
 }
 
 function uploadToHardware() {
+  if (selectedGame === undefined) {
+    swal("Cannot upload game","You have to select the game first!", "error");
+  }
+  else {
+    swal({title:"Uploading Firmware", text:"Selected game: " + selectedGame + "\n\nThis may take a minute.. (1/2)\n",showConfirmButton: false});
+    simulationProxy.uploadGame(selectedGame).done();
+  }
+}
 
+function uploadSuccess() {
+  swal("Game has been uploaded!", "The upload was succesful but some steps may be red. Retry the upload if that is the case.", "success");
+}
+
+function uploadHalfway() {
+  swal({title:"Uploading Firmware", text:"Selected game: " + selectedGame + "\n\nThis may take a minute.. (2/2)\n",showConfirmButton: false});
+}
+
+function uploadFailed() {
+  swal("Something went wrong...", "The upload failed at the server.", "Error");
 }
 
 function loadGame(game) {
@@ -141,8 +164,6 @@ function loadGame(game) {
   loadJS("./games/" + game);
   // wait for it to load.
   setTimeout(uploadToAgents,250);
-
-
 }
 
 function uploadToAgents() {

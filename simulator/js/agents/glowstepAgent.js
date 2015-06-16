@@ -23,7 +23,6 @@ function GlowstepAgent(id, container) {
   };
 
   this._created = false;
-  this._lastMessage = 0;
   this._distanceList = [];
   this._distanceFactor = 0.01;
 }
@@ -82,7 +81,6 @@ GlowstepAgent.prototype._createHTML = function () {
   this.hammer.on('release', me.onRelease.bind(me));
   this.hammer.on('drag', me._onDrag.bind(me));
   this._created = true;
-  this._pingInterval = undefined;
 };
 
 /**
@@ -149,11 +147,15 @@ GlowstepAgent.prototype._moveStep = function () {
  * Forward a click ("stepped on") event to the API
  */
 GlowstepAgent.prototype.onClick = function () {
-  this.steppedOn();
+  if (shiftPressed === false) {
+    this.steppedOn();
+  }
 }
 
 GlowstepAgent.prototype.onRelease = function() {
-  this.steppedOff();
+  if (shiftPressed === false) {
+    this.steppedOff();
+  }
 }
 
 /**
@@ -228,8 +230,8 @@ GlowstepAgent.prototype.sendMessage = function(message) {
   // typecast to string
   message = message + '';
 
-  if (message.length > 22) {
-    console.error("Message is too long, only 20 characters allowed, you have " + message.length + ":", message);
+  if (message.length > 80) {
+    console.error("Message is too long, only 80 characters allowed, you have " + message.length + ":", message);
   }
 
   this._lastMessage = new Date().valueOf();
@@ -264,44 +266,6 @@ GlowstepAgent.prototype.setColor = function(r,g,b,index) {
   }
 }
 
-
-/**
- * Ensure each agent says something atleast once between intervalMin intervalMax
- * @param intervalMin
- * @param intervalMax
- */
-GlowstepAgent.prototype.setPing = function(intervalMin,intervalMax) {
-  // account for idiots using this method incorrectly
-  if (intervalMin > intervalMax) {
-    var temp = intervalMin;
-    intervalMin = intervalMax;
-    intervalMax = temp;
-  }
-
-  // get the interval
-  var interval = intervalMin + Math.random() * (intervalMax - intervalMin);
-
-  // when the interval is too small, its likely given in seconds. Convert to millis
-  if (interval < 1000) {
-    interval *= 1000;
-  }
-
-
-  // only one ping interval is allowed to make sure the system is not flooded
-  if (this._pingInterval !== undefined) {
-    clearInterval(this._pingInterval);
-  }
-
-  // set the itnerval.
-  this._pingInterval = setInterval(
-    function() {
-      if (new Date().valueOf() - this._lastMessage > 0.5*interval) {
-        this.sendMessage('ping');
-      }
-    }.bind(this), interval)
-}
-
-
 /**
  * get the distance to the agent
  * @param agentId
@@ -327,15 +291,13 @@ GlowstepAgent.prototype.getRandomAgent = function() {
 //********************* <OVERLOADABLES> *********************//
 GlowstepAgent.prototype.steppedOn = function () {
   console.log("steppedOn not overloaded");
-  alert("Select a game first.");
+  swal("Select the game first :)", "The steps don't know what to do...","error");
 }
 
 GlowstepAgent.prototype.steppedOff = function () {
   console.log("steppedOff not overloaded");
   //alert("Select a game first.");
 }
-
-
 
 GlowstepAgent.prototype.handleMessage = function (message, distance) {
   console.log("handleMessage not overloaded", message, distance);

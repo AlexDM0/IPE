@@ -12,6 +12,7 @@ function SerialTransport(activePort) {
 
   this.UART_Message = '';
   this.endString = String.fromCharCode(10);
+  this.listeners = {};
 }
 
 SerialTransport.prototype.connect = function () {
@@ -30,7 +31,7 @@ SerialTransport.prototype.scanAvailablePorts = function() {
       }.bind(this));
       resolve();
     }.bind(this));
-  }.bind(this))
+  }.bind(this));
 };
 
 SerialTransport.prototype.scanAndConnect = function() {
@@ -39,7 +40,10 @@ SerialTransport.prototype.scanAndConnect = function() {
       if (this.activePort === undefined || this.activePort === port) {
         var portData = this.availablePorts[port];
         if (portData.connected != true) {
-          this.connections[portData.port.comName] = new SerialPort(portData.port.comName, {baudrate: 9600}, false);
+          if (this.activePort === undefined) {
+            this.activePort = portData.port.comName;
+          }
+          this.connections[portData.port.comName] = new SerialPort(portData.port.comName, {baudrate: 4800}, false);
         }
       }
     }
@@ -57,6 +61,7 @@ SerialTransport.prototype.connectToSerial = function(port) {
   return new Promise(function (resolve, reject) {
     this.connections[port].open(function (error) {
       if (error) {
+        console.log('ERROR in connection with:' + port);
         reject('failed to open: ' + error);
       }
       else {
@@ -81,8 +86,19 @@ SerialTransport.prototype.handleUART = function(data) {
   }
 };
 
+SerialTransport.prototype.register = function(id,callback) {
+  this.listeners[id] = callback;
+}
+
+SerialTransport.prototype.unregister = function(id) {
+  this.listeners[id] = undefined;
+  delete this.listeners[id];
+}
+
 SerialTransport.prototype.handleMessage = function(message) {
-  console.log("message:", message);
+  for (var listener in this.listeners) {
+    this.listeners[listener](message);
+  }
 }
 
 SerialTransport.prototype.closePort = function() {

@@ -5,9 +5,7 @@
 var __behaviour = {
 
   init: function() {
-    this.setPing(2,10);
     this.state = 0;
-
     this.activeState = false;
     this.blocked = false;
     this.timer = undefined;
@@ -17,9 +15,8 @@ var __behaviour = {
   },
 
   resetTimer: function() {
-    console.log("resetting Timer")
     this.cancelTimer();
-    this.timer = setTimeout(this.activate.bind(this), 1000 + Math.random() * 2000)
+    this.timer = setTimeout(this.activate.bind(this), 1000 + Math.random() * 6000)
   },
 
   cancelTimer: function() {
@@ -29,13 +26,12 @@ var __behaviour = {
     }
   },
 
-
-
   activate: function() {
     if (this.activeState === false && this.blocked !== true) {
       this.setColor(0, 255, 255);
       this.activeState = true;
       this.sendMessage('stepActive');
+      this.timer = undefined;
       setTimeout(this.deactivate.bind(this), 3000);
     }
   },
@@ -50,20 +46,17 @@ var __behaviour = {
   },
 
 
-
   steppedOn: function() {
     if (this.activeState === true) {
       this.flash();
       this.sendMessage('flash');
-      var selectNextTarget = {n:this.getRandomAgent(),c:'activate'};
-
-      console.log(selectNextTarget)
-      this.sendMessage(selectNextTarget);
+      this.activeState = false;
     }
     else {
       this.blocked = true;
       this.setColor(255,0,0);
     }
+    this.sendMessage("stepped On")
   },
 
   steppedOff: function() {
@@ -81,9 +74,8 @@ var __behaviour = {
     setTimeout(function () {this.setColor(0,0,0);}.bind(this), 100);
     setTimeout(function () {this.setColor(255,255,255);}.bind(this), 200);
     setTimeout(function () {this.setColor(0,0,0);}.bind(this), 300);
+    this.resetTimer();
   },
-
-
 
   handleMessage: function(message, distance) {
     if (typeof message === 'string') {
@@ -117,7 +109,6 @@ var __behaviour = {
 
 // API: sendMessage(message)    --> send a message to everyone (max length = 20), string or object.
 //      setColor(r,g,b,[index]) --> set one of the colors (r,g,b [0..255], index [1..3])
-//      setPing(min,max)        --> set a minimum message sending frequency between min and max (seconds or milliseconds)
 //      getDistance(sender)     --> gives a distance in meters (approximated and averaged)
 //      getRandomAgent()        --> Get an ID of a random agent that we've met
 

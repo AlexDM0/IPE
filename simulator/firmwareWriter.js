@@ -2,11 +2,12 @@
 
 var Promise = require('promise');
 var SimulatorProxy = require('./agents/simulatorProxy');
-var minify = require('minify');
+var UglifyJS = require('uglify-js');
 
-function FirmwareWriter(transport) {
+function FirmwareWriter(transport,updateCallback) {
+  this.updateCallback = updateCallback;
   this.transport = transport;
-  this.transport.handleMessage = this.handleMessage.bind(this);
+  this.transport.register('fwWriter', this.handleMessage.bind(this));
   this.activePort = this.transport.activePort;
 
   this.availablePorts = {};
@@ -15,7 +16,7 @@ function FirmwareWriter(transport) {
   this.judgementFunctions = {};
   this.chunksize = 80;
   this.defaultChannel = '1';
-  this.uartTimeout = 600; // ms between sending packages that go over the mesh
+  this.uartTimeout = 300; // ms between sending packages that go over the mesh
 
   this.UART_Message = '';
   this.endString = String.fromCharCode(10);
@@ -25,27 +26,45 @@ function FirmwareWriter(transport) {
 
 FirmwareWriter.prototype.upload = function(game) {
   return new Promise(function(resolve, reject) {
-    minify('games/' + game + '.js', function(error, data) {
-      if (error) {
-        console.error(error.message);
-        reject (error.message);
+    var a = UglifyJS.minify(game, {
+      compress: {
+        sequences: false,  // join consecutive statemets with the “comma operator”
+        properties: false,  // optimize property access: a["foo"] → a.foo
+        dead_code: false,  // discard unreachable code
+        drop_debugger: false,  // discard “debugger” statements
+        unsafe: false, // some unsafe optimizations (see below)
+        conditionals: false,  // optimize if-s and conditional expressions
+        comparisons: false,  // optimize comparisons
+        evaluate: false,  // evaluate constant expressions
+        booleans: true,  // optimize boolean expressions
+        loops: false,  // optimize loops
+        unused: false,  // drop unused variables/functions
+        hoist_funs: false,  // hoist function declarations
+        hoist_vars: false, // hoist variable declarations
+        if_return: false,  // optimize if-s followed by return/continue
+        join_vars: false,  // join var declarations
+        cascade: false,  // try to cascade `right` into `left` in sequences
+        side_effects: false,  // drop side-effect-free statements
+        warnings: false,  // warn about potentially dangerous optimizations/code
+        global_defs: {}     // global definitions}}))
       }
-      else {
-        var processedData = data.replace(/(\$)/g,'R');
-        processedData = processedData.replace(/(@)/g,'D');
-        processedData = processedData.replace(/(%)/g,'@P@');
-        var correctedData = this.firmwareCode + processedData + this.firmwareCode;
-        this.send(correctedData)
-          .done(function () {
-            resolve();
-          }.bind(this));
-      }
-    }.bind(this))
+    });
+    var data = a.code;
+    var processedData = data.replace(/(\$)/g, 'R');
+    processedData = processedData.replace(/(@)/g, 'D');
+    processedData = processedData.replace(/(%)/g, '@P@');
+    var correctedData = this.firmwareCode + processedData + this.firmwareCode;
+    this.send(correctedData).done(function () {
+      resolve();
+    }.bind(this));
+
   }.bind(this));
 }
 
 FirmwareWriter.prototype.send = function(message) {
   return new Promise(function (resolve, reject) {
+    var msg = 'Serial4.print(String.fromCharCode(3));\n';
+    this.transport.connections[this.activePort].write(msg);
     this.queue = [];
     this.judgementFunctions = {};
 
@@ -57,7 +76,9 @@ FirmwareWriter.prototype.send = function(message) {
       }
     }
     this.queue.push({func:resolve, end:true, pending:false, completed:false, index:i+1});
-    this.runQueue();
+    setTimeout(function() {
+      this.runQueue();
+    }.bind(this),3000);
   }.bind(this));
 };
 
@@ -101,7 +122,7 @@ FirmwareWriter.prototype.generateWriteFunction = function(message, triggerEnd, c
       msg += '\")\n';
     }
     this.transport.connections[this.activePort].write(msg);
-    //console.log("sending:", msg);
+    console.log("sending:", msg);
   }.bind(this);
 
   this.queue.push({func:writeFunction, end:triggerEnd, pending:false, completed:false, index:index});

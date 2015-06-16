@@ -13,7 +13,7 @@ var __behaviour = {
     ];
     this.colorIndex = 0;
 
-    this.setColor(255,255,0);
+    this.setColor(0,255,255);
   },
 
   steppedOn: function() {
@@ -28,7 +28,12 @@ var __behaviour = {
   },
 
   handleMessage: function(message, rssi) {
-    console.log("I have a message!");
+    if (message.indexOf("red") !== -1) {
+      this.setColor(255,0,0);
+    }
+    if (message.indexOf('green') !== -1) {
+      this.setColor(0,255,0);
+    }
   }
 }
 

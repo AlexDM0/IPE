@@ -1,10 +1,12 @@
 
 function GlowstepAgent() {
   this._colors = {
-    1:{color:{r:0,g:0,b:0}, pins:{r:C8,g:C7,b:C6}},
-    2:{color:{r:0,g:0,b:0}, pins:{r:C9,g:B3,b:B8}},
-    3:{color:{r:0,g:0,b:0}, pins:{r:B9,g:A0,b:A1}}
+    1:{color:{r:0,g:0,b:0}, pins:{r:C6,g:C7,b:C8}},
+    2:{color:{r:0,g:0,b:0}, pins:{r:B8,g:B3,b:C9}},
+    3:{color:{r:0,g:0,b:0}, pins:{r:A1,g:A0,b:B9}}
   };
+  this.setColor(0,0,0);
+  this._distanceList = {};
 }
 
 /**
@@ -50,24 +52,41 @@ GlowstepAgent.prototype._setColor = function(r,g,b,index) {
  * @param message
  */
 GlowstepAgent.prototype.sendMessage = function(message, alternateChannel) {
-  if (typeof message === 'object') {
-    message = JSON.stringify(message);
-  }
-
   var channel = 1;
   if (alternateChannel === true) {
     channel = 2;
   }
 
-  // typecast to string
-  message = message + '';
+  // wrap in envelope
+  message = JSON.stringify({n:AGENT_ID, m:message});
 
   if (message.length > 80) {
     console.error("Message is too long, only 80 characters allowed, you have " + message.length + ":", message);
   }
-
   // send message
   Serial4.print(channel + message + String.fromCharCode(0));
+};
+
+GlowstepAgent.prototype.processIncomingMessage = function(message, distance) {
+  var messageObj = JSON.parse(message);
+  if (messageObj !== undefined) {
+    if (messageObj.n !== undefined) {
+      if (this._distanceList[messageObj.n] === undefined) {
+        this._distanceList[messageObj.n] = {avg: 0, deck: [0, 0, 0, 0, 0], index: 0};
+      }
+      var entree = this._distanceList[messageObj.n];
+      entree.deck[entree.index] = distance;
+      entree.index = (entree.index + 1) % entree.deck.length;
+
+      entree.avg = 0;
+      for (var i = 0; i < entree.deck.length; i++) {
+        entree.avg += entree.deck[i];
+      }
+      entree.avg /= entree.deck.length;
+
+      this.handleMessage(messageObj.m, distance);
+    }
+  }
 };
 
 
@@ -146,11 +165,11 @@ function __initSensorDeck() {
   }
 }
 
+
+var sensorLow = 0.2;
+var sensorHigh = 0.6;
 function __setSensorWatch() {
-  if (sensorWatch !== undefined) {
-    clearInterval(sensorWatch);
-  }
-  sensorWatch = setInterval(function () {
+  setInterval(function () {
     var sensorValue = analogRead(C4);
     sensorDeck[sensorIndex] = sensorValue;
     sensorIndex = (sensorIndex + 1) % sensorWindow;
@@ -159,15 +178,36 @@ function __setSensorWatch() {
       value += sensorDeck[i];
     }
     value /= sensorWindow;
-    if (value > SENSOR_THRESHOLD && steppedOnState === 0) {
+
+
+    if (steppedOnState == 0) {
+      sensorLow += 0.0005;
+      sensorLow = sensorLow > value ? value : sensorLow;
+    }
+    else {
+      sensorHigh -= 0.0005;
+      sensorHigh = sensorHigh < value ? value : sensorHigh;
+    }
+
+    var diff = sensorHigh - sensorLow;
+    var sensorThreshold = sensorLow + 0.5 * diff;
+    //console.log(value,sensorThreshold,sensorHigh,sensorLow, steppedOnState);
+
+    if (value > sensorThreshold && steppedOnState === 0) {
       steppedOnState = 1;
       theAgent.steppedOn();
     }
-    else if (value <= SENSOR_THRESHOLD && steppedOnState === 1) {
+    else if (value < sensorThreshold && steppedOnState === 1) {
       theAgent.steppedOff();
       steppedOnState = 0;
     }
   },20);
+
+}
+
+function processRSSI(rssi) {
+  LAST_RSSI_DISTANCE = Math.pow(Math.E, (((rssi + 60) * Math.LN10)/(-20)));
+  console.log('parsed RSSI:', rssi, LAST_RSSI_DISTANCE);
 }
 
 
@@ -179,7 +219,6 @@ function handleUART(data) {
     var dataArray = fullMessage.split(endString);
     var processedMessage = dataArray[0];
     UART_Message = "";
-
     var meshIndex = processedMessage.indexOf("MESH:");
     var rssiIndex = processedMessage.indexOf("RSSI:");
     if (meshIndex !== -1) {
@@ -187,13 +226,12 @@ function handleUART(data) {
       var messageContent = processedMessage.substr(meshIndex+meshOffset,processedMessage.length);
       checkForFirmware(messageContent);
       if (COLLECT_FIRMWARE === false) {
-        theAgent.handleMessage(messageContent,LAST_RSSI_DISTANCE)
+        theAgent.processIncomingMessage(messageContent,LAST_RSSI_DISTANCE)
       }
     }
     else if (rssiIndex !== -1) {
       var rssiOffset = 5; // 5 is RSSI:
-      LAST_RSSI = -1*Number(processedMessage.substr(rssiIndex+rssiOffset,processedMessage.length));
-      LAST_RSSI_DISTANCE = Math.pow(Math.E, (((LAST_RSSI + 60) * Math.LN10)/(-20)));
+      processRSSI(-1*Number(processedMessage.substr(rssiIndex+rssiOffset,processedMessage.length)));
     }
     else {
       console.log('other:',processedMessage);
@@ -258,9 +296,10 @@ function checkForFirmware(processedMessage) {
 
   }
 
-  if (firmwareComplete === true) {
+  if (firmwareComplete === true && IGNORE_FIRMWARE === false) {
     // remove the last 3 digits for the end of firmware code.
     FIRMWARE_MESSAGE = FIRMWARE_MESSAGE.substr(0,FIRMWARE_MESSAGE.length - FWtagLength);
+    theAgent.setColor(0,0,255);
     processFirmware(FIRMWARE_MESSAGE);
     COLLECT_FIRMWARE = false;
     FIRMWARE_MESSAGE = "";
@@ -277,10 +316,13 @@ function getChecksum(message) {
 }
 
 function setReadingFirmware() {
-  theAgent.setColor(0,255,0);
-  setTimeout(function () {theAgent.setColor(0  ,0  ,0  );}.bind(this), 100);
-  setTimeout(function () {theAgent.setColor(0  ,0  ,255);}.bind(this), 200);
-  setTimeout(function () {theAgent.setColor(0  ,255,0  );}.bind(this), 300);
+  clearInterval();
+  clearTimeout();
+  clearWatch();
+
+  theAgent.setColor(0,255,0,1);
+  setTimeout(function () {theAgent.setColor(0  ,255 ,0,2);}.bind(this), 100);
+  setTimeout(function () {theAgent.setColor(0  ,255 ,0,3);}.bind(this), 200);
 }
 
 function setInvalidFirmware() {
@@ -313,9 +355,7 @@ var theAgent;
 var sensorIndex = 0;
 var sensorWindow = 5;
 var steppedOnState = 0;
-var SENSOR_THRESHOLD = 0.25;
 var endString = String.fromCharCode(10);
-var sensorWatch = undefined;
 var UART_Message = "";
 var FIRMWARE_MESSAGE = "";
 var FWsymbol = "$";
@@ -323,7 +363,6 @@ var FWtag = "$$$";
 var FWtagLength = FWtag.length;
 var COLLECT_FIRMWARE = false;
 var IGNORE_FIRMWARE = false;
-var LAST_RSSI = 0;
 var LAST_RSSI_DISTANCE = 0;
 var AGENT_ID = 0;
 
@@ -363,9 +402,7 @@ function onInit() {
   clearTimeout();
   clearWatch();
 
-  sensorWatch = undefined;
-
-  AGENT_ID = (Math.round(Math.random()*(36*36*36 - 1))).toString(32);
+  AGENT_ID = Math.round(Math.random() * (36*36*36-1)).toString(36);
 
   Serial4.setup(9600,{rx:C11,tx:C10});
   Serial4.removeAllListeners('data');

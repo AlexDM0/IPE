@@ -19,7 +19,7 @@ function onInit() {
   clearTimeout();
   clearWatch();
 
-  Serial4.setup(9600,{rx:C11,tx:C10});
+  Serial4.setup(4800,{rx:C11,tx:C10});
   Serial4.removeAllListeners('data');
   Serial4.on('data', function (data) {handleUART(data);});
 }
