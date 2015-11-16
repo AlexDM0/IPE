@@ -17,8 +17,10 @@ eve.system.init({
   ]
 });
 
-
+// default setup for windows:
 var transport = new SerialTransport();
+
+// uncomment this when using UNIX systems
 //var transport = new SerialTransport('/dev/ttyACM1');
 transport.connect().then(function() {
   var proxy = new SimulatorProxy('proxy',transport);

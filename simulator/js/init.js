@@ -5,7 +5,7 @@
 var simulationProxy;
 var agents = {};
 var container;
-var amountOfAgents = 5;
+var amountOfAgents = 4;
 var selectedGame;
 var loadedScript = undefined;;
 
@@ -141,7 +141,7 @@ function uploadToHardware() {
     swal("Cannot upload game","You have to select the game first!", "error");
   }
   else {
-    swal({title:"Uploading Firmware", text:"Selected game: " + selectedGame + "\n\nThis may take a minute.. (1/2)\n",showConfirmButton: false});
+    swal({title:"Uploading Firmware", text:"Selected game: " + selectedGame + "\n\nThis may take a minute.. \n",showConfirmButton: false});
     simulationProxy.uploadGame(selectedGame).done();
   }
 }
@@ -154,8 +154,13 @@ function uploadHalfway() {
   swal({title:"Uploading Firmware", text:"Selected game: " + selectedGame + "\n\nThis may take a minute.. (2/2)\n",showConfirmButton: false});
 }
 
-function uploadFailed() {
-  swal("Something went wrong...", "The upload failed at the server.", "Error");
+function uploadFailed(message) {
+  if (message !== undefined) {
+    swal("Something went wrong...", message, "Error");
+  }
+  else {
+    swal("Something went wrong...", "The upload failed at the server.", "Error");
+  }
 }
 
 function loadGame(game) {

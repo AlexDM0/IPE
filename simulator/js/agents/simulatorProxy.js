@@ -39,7 +39,7 @@ SimulatorProxy.prototype.rpcFunctions.uploadHalfway = function (params, sender) 
 }
 
 SimulatorProxy.prototype.rpcFunctions.errorInUpload = function (params, sender) {
-  uploadFailed();
+  uploadFailed(params.message);
 }
 
 

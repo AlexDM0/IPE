@@ -304,6 +304,9 @@ function checkForFirmware(processedMessage) {
     COLLECT_FIRMWARE = false;
     FIRMWARE_MESSAGE = "";
   }
+  else if (firmwareComplete === true) {
+    onInit();
+  }
   return COLLECT_FIRMWARE;
 }
 
@@ -319,16 +322,22 @@ function setReadingFirmware() {
   clearInterval();
   clearTimeout();
   clearWatch();
+  GLOBAL_COUNTER = 1;
 
-  theAgent.setColor(0,255,0,1);
-  setTimeout(function () {theAgent.setColor(0  ,255 ,0,2);}.bind(this), 100);
-  setTimeout(function () {theAgent.setColor(0  ,255 ,0,3);}.bind(this), 200);
+  setInterval(function () {
+    theAgent.setColor(0, 0, 0);
+    theAgent.setColor(0, 255, 0, GLOBAL_COUNTER);
+    GLOBAL_COUNTER = (GLOBAL_COUNTER % 3) + 1;
+  }, 300);
+
+
 }
 
 function setInvalidFirmware() {
   IGNORE_FIRMWARE = true;
   FIRMWARE_MESSAGE = "";
   console.log('INVALID_FIRMWARE');
+  clearInterval();
 
   theAgent.setColor(255,0,0);
   setTimeout(function () {theAgent.setColor(0  ,0  ,0  );}.bind(this), 100);
@@ -365,6 +374,7 @@ var COLLECT_FIRMWARE = false;
 var IGNORE_FIRMWARE = false;
 var LAST_RSSI_DISTANCE = 0;
 var AGENT_ID = 0;
+var GLOBAL_COUNTER = 0;
 
 if (typeof GLOBAL_BEHAVIOUR === 'undefined') {
   var GLOBAL_BEHAVIOUR = {
@@ -398,6 +408,8 @@ if (typeof GLOBAL_BEHAVIOUR === 'undefined') {
 }
 
 function onInit() {
+  UART_Message = '';
+  FIRMWARE_MESSAGE = '';
   clearInterval();
   clearTimeout();
   clearWatch();

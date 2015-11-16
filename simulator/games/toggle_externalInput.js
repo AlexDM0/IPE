@@ -34,6 +34,9 @@ var __behaviour = {
     if (message.indexOf('green') !== -1) {
       this.setColor(0,255,0);
     }
+    if (message.indexOf('off') !== -1) {
+      this.setColor(0,0,0);
+    }
   }
 }
 

@@ -1,3 +1,10 @@
+/**
+ * This is the code that should be stored on the USB connected espruino.
+ * The IPE shield has to be connected to this espruino (the one with the RFDUINO module)
+ *
+ * @param data
+ */
+
 function handleUART(data) {
   UART_Message += data;
   var endIndex = UART_Message.indexOf(endString);
@@ -6,7 +13,7 @@ function handleUART(data) {
     var dataArray = fullMessage.split(endString);
     var processedMessage = dataArray[0];
     UART_Message = "";
-    console.log(processedMessage);
+    console.log(processedMessage); // this logs it to the RFModule
     handleUART(data.substr(data.indexOf(endString) + endString.length));
   }
 }

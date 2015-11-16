@@ -19,13 +19,18 @@ function SimulatorProxy(id, transport) {
   // reset crownstone
   var msg = 'Serial4.print(String.fromCharCode(3));\n';
   this.activePort = this.transport.activePort;
-  this.transport.connections[this.activePort].write(msg);
 
+  // check if there is an active port, if not, we cannot upload
+  if (this.activePort === undefined) {
+    console.info("Has the USB receiver been plugged in? Could not setup USB communication. If you want to be able to upload the game, check the connection and restart the server.")
+  }
+  else {
+    this.transport.connections[this.activePort].write(msg);
+  }
 
   this.getGames();
 
-  console.log("starting SimulationProxy")
-
+  console.log("starting SimulationProxy");
 }
 
 // extend the eve.Agent prototype
@@ -39,6 +44,10 @@ SimulatorProxy.prototype.rpcFunctions.getGames = function (params, sender) {
   return this.games;
 };
 
+
+/**
+ * This reads the harddrive for games and notifies the simulator which ones exist
+ */
 SimulatorProxy.prototype.getGames = function () {
   var me = this;
   fs.readdir('./games/', function (err, files) {
@@ -46,8 +55,20 @@ SimulatorProxy.prototype.getGames = function () {
   })
 }
 
+
+/**
+ * Upload the game to the steps.
+ * @param params
+ * @param sender
+ * @returns {*}
+ */
 SimulatorProxy.prototype.rpcFunctions.uploadGame = function(params, sender) {
-  console.log("received command to upload game")
+  console.log("received command to upload game");
+  if (this.activePort === undefined) {
+    this.rpc.request(sender,{method:"errorInUpload", params:{message:"Cannot connect to USB module. Make sure the module is plugged in and restart the server."}}).done();
+    return;
+  }
+
   var game = params.game;
   return this.uploadGame(game)
     //.then(function () {

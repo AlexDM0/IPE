@@ -1,4 +1,9 @@
-
+/**
+ * This interacts with the actuator agent. The actuator can send messages into the mesh.
+ *
+ * @param id
+ * @constructor
+ */
 function ActuatorProxy(id) {
   // execute super constructor
   eve.Agent.call(this, id);
@@ -22,6 +27,9 @@ ActuatorProxy.prototype.setRed = function() {
 }
 ActuatorProxy.prototype.setGreen = function() {
   return this.rpc.request("ws://127.0.0.1:3000/agents/actuator",{method:'sendToMesh',params:{color:'green'}});
+}
+ActuatorProxy.prototype.turnOff = function() {
+  return this.rpc.request("ws://127.0.0.1:3000/agents/actuator",{method:'sendToMesh',params:{color:'off'}});
 }
 
 ActuatorProxy.prototype.rpcFunctions = {};
