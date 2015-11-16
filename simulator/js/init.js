@@ -116,10 +116,6 @@ function createGrid() {
   }
 }
 
-function createRandomly() {
-
-}
-
 function setAmount(amount) {
   document.getElementById('li_id_' + amountOfAgents).className = '';
   document.getElementById('li_id_' + amount).className = 'selected';

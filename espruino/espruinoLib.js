@@ -1,3 +1,12 @@
+/**
+ * This software should be installed on the step modules. It loads a behaviour which can be uploaded as a game.
+ *
+ * DOT NOT ALTER UNLESS YOU KNOW WHAT YOU'RE DOING!
+ * @constructor
+ */
+
+
+
 
 function GlowstepAgent() {
   this._colors = {
@@ -155,8 +164,10 @@ GlowstepAgent.prototype.handleMessage = function (message, distance) {
 //********************* </API> *********************//
 
 
-
-
+/**
+ * setup sensor data structure, used for step detection.
+ * @private
+ */
 function __initSensorDeck() {
   sensorIndex = 0;
   sensorDeck = [];
@@ -166,6 +177,12 @@ function __initSensorDeck() {
 }
 
 
+/**
+ *
+ * The sensor will be calibrated based on the step. This may need to be updated
+ * if different step detection hardware is used.
+ * @type {number}
+ */
 var sensorLow = 0.2;
 var sensorHigh = 0.6;
 function __setSensorWatch() {
@@ -205,12 +222,21 @@ function __setSensorWatch() {
 
 }
 
+/**
+ * this will give a rough estimate of distance based off the RSSI
+ * @param rssi
+ */
 function processRSSI(rssi) {
   LAST_RSSI_DISTANCE = Math.pow(Math.E, (((rssi + 60) * Math.LN10)/(-20)));
   console.log('parsed RSSI:', rssi, LAST_RSSI_DISTANCE);
 }
 
 
+/**
+ * This handles the incoming data.
+ * The data can be segmented in chunks
+ * @param data
+ */
 function handleUART(data) {
   UART_Message += data;
   var endIndex = UART_Message.indexOf(endString);
@@ -222,7 +248,7 @@ function handleUART(data) {
     var meshIndex = processedMessage.indexOf("MESH:");
     var rssiIndex = processedMessage.indexOf("RSSI:");
     if (meshIndex !== -1) {
-      var meshOffset = 6; // 6 is MESH:x where x is the channel number;
+      var meshOffset = 6; // 6 is the length "MESH:x" where x is the channel number;
       var messageContent = processedMessage.substr(meshIndex+meshOffset,processedMessage.length);
       checkForFirmware(messageContent);
       if (COLLECT_FIRMWARE === false) {
@@ -230,18 +256,24 @@ function handleUART(data) {
       }
     }
     else if (rssiIndex !== -1) {
-      var rssiOffset = 5; // 5 is RSSI:
+      var rssiOffset = 5; // 5 is the length of "RSSI:"
       processRSSI(-1*Number(processedMessage.substr(rssiIndex+rssiOffset,processedMessage.length)));
     }
     else {
-      console.log('other:',processedMessage);
+      console.log('other:',processedMessage); // do not know how to process this.
     }
     handleUART(data.substr(data.indexOf(endString) + endString.length));
   }
 }
 
+/**
+ * this checks if this message is part of a firmware upload and checks the validity of the firmware.
+ * it collects the firmware chunks and validates with checksum to avoid dropped bits messing up the code.
+ * @param processedMessage
+ * @returns {boolean}
+ */
 function checkForFirmware(processedMessage) {
-  // firmware symbol located.
+  // check if firmware symbol is found. tag is $$$
   var firmwareComplete = false;
   var startOfFirmware = 0;
   var endOfFirmware = processedMessage.indexOf("@@@");
@@ -284,7 +316,7 @@ function checkForFirmware(processedMessage) {
     else {
       var checksum = processedMessage.substr(endOfFirmware+3, processedMessage.length - endOfFirmware);
       var seg = processedMessage.substr(0, endOfFirmware);
-      var localChecksum = getChecksum(seg);
+      var localChecksum = _getChecksum(seg);
       if (checksum != localChecksum) {
         console.log("INVALID:", seg, localChecksum, checksum)
         setInvalidFirmware();
@@ -310,7 +342,13 @@ function checkForFirmware(processedMessage) {
   return COLLECT_FIRMWARE;
 }
 
-function getChecksum(message) {
+/**
+ * get a checksum
+ * @param message
+ * @returns {number}
+ * @private
+ */
+function _getChecksum(message) {
   var checksum = 0;
   for (var letter in message) {
     checksum += message.charCodeAt(letter);
@@ -318,6 +356,9 @@ function getChecksum(message) {
   return checksum;
 }
 
+/**
+ * enable the reading firmware mode
+ */
 function setReadingFirmware() {
   clearInterval();
   clearTimeout();
@@ -329,10 +370,12 @@ function setReadingFirmware() {
     theAgent.setColor(0, 255, 0, GLOBAL_COUNTER);
     GLOBAL_COUNTER = (GLOBAL_COUNTER % 3) + 1;
   }, 300);
-
-
 }
 
+
+/**
+ * set the failed firmware upload mode
+ */
 function setInvalidFirmware() {
   IGNORE_FIRMWARE = true;
   FIRMWARE_MESSAGE = "";
@@ -344,6 +387,11 @@ function setInvalidFirmware() {
   setTimeout(function () {theAgent.setColor(255,0  ,0  );}.bind(this), 200);
 }
 
+
+/**
+ * update the firmware based off the firmware string. Percent sign can mess things up to it has been escaped.
+ * @param firmwareString
+ */
 function processFirmware(firmwareString) {
   while (firmwareString.indexOf("@P@") != -1) {
     firmwareString = firmwareString.replace("@P@","%");
@@ -354,6 +402,9 @@ function processFirmware(firmwareString) {
   save();
 }
 
+/**
+ * start the agent with its new behaviour
+ */
 function bootAgent() {
   theAgent = new GlowstepAgent();
   theAgent.loadBehaviour(GLOBAL_BEHAVIOUR);

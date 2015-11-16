@@ -17,14 +17,13 @@ eve.system.init({
   ]
 });
 
+console.log("Connecting to Espruino node....")
+
 // default setup for windows:
 var transport = new SerialTransport();
 
 // uncomment this when using UNIX systems
-//var transport = new SerialTransport('/dev/ttyACM1');
-
-
-console.log("Connecting to Espruino node....")
+// var transport = new SerialTransport('/dev/ttyACM1');
 transport.connect().then(function() {
   var proxy = new SimulatorProxy('proxy',transport);
   var listener = new Listener('listener',transport);

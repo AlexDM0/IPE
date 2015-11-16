@@ -75,5 +75,15 @@ open the actuator.html (./simulator/actuator.html) in the Chrome browser. Make s
 The viewer is just listening for messages on the mesh network and sending showing them as they come by. To run the example,
 open the viewer.html (./simulator/viewer.html) in the Chrome browser. Make sure the eve-server is also running.
 
+# Uploading games
+If you have selected a game in the simulator and have connected the USB module, you can press the button upload to steps.
+The steps should rotate a green light to indicate that they are receiving the data. If they turn red, it means they have not
+succesfully received the data and they will fall back on the previously installed game. If everything goes well, they should boot into the
+uploaded game.
+
+You can retry the sending of the application as many times as you'd like.
+
+# Troubleshooting
+It is possible to connect one of the tiles to USB by taking out the module. You can read out console logs for debugging pruposes.
 
 
