@@ -29,9 +29,16 @@ Actuator.prototype.constructor = Actuator;
 
 Actuator.prototype.rpcFunctions = {};
 Actuator.prototype.rpcFunctions.sendToMesh = function(params,sender) {
-  var msg = "Serial4.print(\'1" + JSON.stringify({n:"pc",m:"set" + params.color}) + "\'" + "+ String.fromCharCode(0));\n";
-  console.log(msg)
-  this.transport.connections[this.activePort].write(msg);
+  if (this.activePort === undefined) {
+    console.info("Could not connect with the USB module. Check conenction and restart the server.");
+  }
+  else {
+    var msg = "Serial4.print(\'1" + JSON.stringify({
+        n: "pc",
+        m: params.message
+      }) + "\'" + "+ String.fromCharCode(0));\n";
+    this.transport.connections[this.activePort].write(msg);
+  }
 };
 
 module.exports = Actuator;

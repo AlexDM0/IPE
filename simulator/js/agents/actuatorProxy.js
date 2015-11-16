@@ -22,14 +22,13 @@ ActuatorProxy.prototype.constructor = ActuatorProxy;
 // define RPC functions, preferably in a separated object to clearly distinct
 // exposed functions from local functions.
 ActuatorProxy.prototype.setRed = function() {
-  console.log("hello RED")
-  return this.rpc.request("ws://127.0.0.1:3000/agents/actuator",{method:'sendToMesh',params:{color:'red'}});
+  return this.rpc.request("ws://127.0.0.1:3000/agents/actuator",{method:'sendToMesh',params:{message:'red'}});
 }
 ActuatorProxy.prototype.setGreen = function() {
-  return this.rpc.request("ws://127.0.0.1:3000/agents/actuator",{method:'sendToMesh',params:{color:'green'}});
+  return this.rpc.request("ws://127.0.0.1:3000/agents/actuator",{method:'sendToMesh',params:{message:'green'}});
 }
 ActuatorProxy.prototype.turnOff = function() {
-  return this.rpc.request("ws://127.0.0.1:3000/agents/actuator",{method:'sendToMesh',params:{color:'off'}});
+  return this.rpc.request("ws://127.0.0.1:3000/agents/actuator",{method:'sendToMesh',params:{message:'off'}});
 }
 
 ActuatorProxy.prototype.rpcFunctions = {};

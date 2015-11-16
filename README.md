@@ -67,5 +67,13 @@ Refresh the simulator in case something goes wrong.
 - When you release the click, the node fires steppedOff.
 - You can hold shift and drag the nodes around with the mouse.
 
+# Using the actuator
+With the actuator you can manually send messages to the mesh network. To run the example,
+open the actuator.html (./simulator/actuator.html) in the Chrome browser. Make sure the eve-server is also running.
+
+# Using the viewer
+The viewer is just listening for messages on the mesh network and sending showing them as they come by. To run the example,
+open the viewer.html (./simulator/viewer.html) in the Chrome browser. Make sure the eve-server is also running.
+
 
 
