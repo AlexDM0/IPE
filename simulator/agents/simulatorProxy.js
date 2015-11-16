@@ -20,6 +20,10 @@ function SimulatorProxy(id, transport) {
   var msg = 'Serial4.print(String.fromCharCode(3));\n';
   this.activePort = this.transport.activePort;
 
+  // in case there are no ports but the address is hardcoded (unix)
+  if (Object.keys(this.transport.availablePorts).length == 0) {
+    this.activePort = undefined;
+  }
   // check if there is an active port, if not, we cannot upload
   if (this.activePort === undefined) {
     console.info("Has the USB receiver been plugged in? Could not setup USB communication. If you want to be able to upload the game, check the connection and restart the server.")

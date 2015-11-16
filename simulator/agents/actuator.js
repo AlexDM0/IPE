@@ -7,6 +7,11 @@ function Actuator(id, transport) {
   this.transport = transport;
   this.activePort = this.transport.activePort;
 
+  // in case there are no ports but the address is hardcoded (unix)
+  if (Object.keys(this.transport.availablePorts).length == 0) {
+    this.activePort = undefined;
+  }
+
   // extend the agent with RPC functionality
   this.rpc = this.loadModule('rpc', this.rpcFunctions, {timeout:200000}); // option 1
 

@@ -178,7 +178,6 @@ function __initSensorDeck() {
 
 
 /**
- *
  * The sensor will be calibrated based on the step. This may need to be updated
  * if different step detection hardware is used.
  * @type {number}

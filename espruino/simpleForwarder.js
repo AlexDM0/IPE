@@ -13,7 +13,7 @@ function handleUART(data) {
     var dataArray = fullMessage.split(endString);
     var processedMessage = dataArray[0];
     UART_Message = "";
-    console.log(processedMessage); // this logs it to the RFModule
+    console.log(processedMessage); // this logs/sends it to the RFModule
     handleUART(data.substr(data.indexOf(endString) + endString.length));
   }
 }
